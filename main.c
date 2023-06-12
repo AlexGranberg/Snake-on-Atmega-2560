@@ -11,7 +11,7 @@
 
 void setPinInput(uint8_t pin) {
     // Set pin as input using the appropriate registers for your MCU
-    // For Atmega2560, you can use the following code:
+    // For Atmega2560
     DDRF &= ~(1 << pin);    // Set pin direction to input
     PORTF &= ~(1 << pin);   // Disable internal pull-up resistor
 }
@@ -32,14 +32,14 @@ int main()
 {
 	init_serial();
 	max7219_init();
-    srandom(time(NULL));   // Initialization, should only be called once.
+    srandom(time(NULL));   // Call only once!
 	int x = 0;
 	int y = 0;
 
-    setPinInput(0);  // Set pin A0 as input
+    setPinInput(2);  // Set pin A2 as input
 
 	while (1) {
-        int seed = analogRead(0);
+        int seed = analogRead(2);
         srandom(seed);
 
         int number1 = randNum(x);
@@ -49,7 +49,7 @@ int main()
         max7219b_set(number1, number2);
         max7219b_out();
         _delay_ms(2000);
-		//gameText(x, y);
+		gameText(x, y);
 		for(int i = 0; i < 32;i++){
 			printf("%d\n", i);
 			max7219b_set(i, y);
