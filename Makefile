@@ -8,7 +8,7 @@ MCU=atmega2560
 CFLAGS=-Wall -Wextra  -Wundef -pedantic \
 		-Os -std=gnu99 -DF_CPU=16000000UL -mmcu=${MCU} -DBAUD=11500
 LDFLAGS=-mmcu=$(MCU)
-PORT=\\\\.\\COM13
+PORT=\\\\.\\COM3
 BIN=EtchASketch
 OUT=${BIN}.hex
 SOURCES = main.c millis.c uart.c max72xx.c analogRead.c gameText.c
