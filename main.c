@@ -129,8 +129,6 @@ int main() {
     		// 	max7219b_clr_all();
 			// }
 
-        // _delay_ms(100);
-
 		//gameText(x, y); PRINT GAME HARDCODED
 
 		// PRINT OUT SOM ROWS
