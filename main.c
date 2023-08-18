@@ -6,6 +6,7 @@
 #include "gameText.h"
 #include <time.h>
 #include <stdlib.h>
+#include "generalFunctions.h"
 
 //// https://wokwi.com/projects/367313440995520513
 
@@ -23,23 +24,45 @@
 #define min(X,Y) ((X) < (Y) ? (X) : (Y))
 #define max(X,Y) ((X) > (Y) ? (X) : (Y))
 
-void setPinInput(uint8_t pin) {
+void setPinInput(unsigned char pin) {
     // Set pin as input using the appropriate registers for your MCU
     // For Atmega2560
     DDRF &= ~(1 << pin);    // Set pin direction to input
     PORTF &= ~(1 << pin);   // Disable internal pull-up resistor
 }
 
-int randNum(x){
-    int c;
-    c = random() % 32;
-    return c;
+int randNum(){
+    int r;
+    r = random() % 32;
+    return r;
 }
 
-int randNum2(y){
+int randNum2(){
     int r;
-    r = random() % 7;
+    r = random() % 8;
     return r;
+}
+
+void snakePosition(int x, int y){
+	max7219b_set(x, y);
+}
+
+
+void snakeMovement(Snake *snake, Snake_Direction direction){
+	int maxY = 8;
+	int maxX = 32;
+	if(direction == snake_Direction_Down){
+		snake->y_Position = (snake->y_Position + 1 + maxY) % maxY;
+	}
+	if(direction == snake_Direction_Up){
+		snake->y_Position = (snake->y_Position - 1 + maxY) % maxY;
+	}	
+	if(direction == snake_Direction_Right){
+		snake->x_Position = (snake->x_Position + 1) % maxX;
+	}
+	if(direction == snake_Direction_Left){
+		snake->x_Position = (snake->x_Position - 1 + maxX) % maxX;
+	}
 }
 
 int main() {
@@ -52,47 +75,61 @@ int main() {
 	BIT_CLEAR(DDRE,SEL_PIN); // INPUT MODE
     BIT_SET(PORTE,SEL_PIN); 
 
+	Snake snake;
 	init_serial();
 	max7219_init();
     srandom(time(NULL));   // Call only once!
-	int x = 0;
-	int y = 0;
-	int maxX = 31;
-	int maxY = 7;
+	snake.x_Position = 4;
+	snake.y_Position = 4;
+	Snake_Direction currentSnakeDirection = snake_Direction_Right;
+	int seed = analogRead(4);
+	srandom(seed);
+	
+
 
     setPinInput(2);  // Set pin A2 as input
 
 	while (1) {
-        int seed = analogRead(4);
-        srandom(seed);
+
 		int horz = analogRead(HORZ_PIN);
   		int vert = analogRead(VERT_PIN);
+		int lastPositionX;
+		int lastPositionY;
+		int randomX = 0;
+		int randomY = 0;
+        int number1 = randNum();
+        printf("%d\n", randNum);
+        int number2 = randNum2();
+        printf("%d\n", randNum2);
+        // max7219b_set(number1, number2);
 
-        //int number1 = randNum(x);
-        //printf("%d\n", randNum);
-        //int number2 = randNum2(y);
-        //printf("%d\n", randNum2);
-        //max7219b_set(number1, number2);
-		max7219b_set(x, y);
+		// max7219b_set(x, y);
+		snakePosition(snake.x_Position, snake.y_Position);
+		_delay_ms(150);
         max7219b_out();
-		
-			if (vert < 300) {
-				y = min(y + 1, maxY);
-			}
-			if (vert > 700) {
-				y = max(y - 1, 0);
-			}
-			if (horz < 700) {
-				x = min(x + 1, maxX);
-			}
-			if (horz > 300) {
-				x = max(x - 1, 0);
-			}
-			if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {
-    			max7219b_clr_all();
-			}
+		lastPositionX = snake.x_Position;
+		lastPositionY = snake.y_Position;
+		snakeMovement(&snake, currentSnakeDirection);
+		max7219b_clr(lastPositionX, lastPositionY);
 
-        _delay_ms(100);
+		if (vert < 300) {
+			currentSnakeDirection = snake_Direction_Down;
+		}
+		if (vert > 700) {
+			currentSnakeDirection = snake_Direction_Up;
+		}
+		if (horz < 300) {
+			currentSnakeDirection = snake_Direction_Right;
+		}
+		if (horz > 700) {
+			currentSnakeDirection = snake_Direction_Left;
+		}
+
+			// if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {
+    		// 	max7219b_clr_all();
+			// }
+
+        // _delay_ms(100);
 
 		//gameText(x, y); PRINT GAME HARDCODED
 
