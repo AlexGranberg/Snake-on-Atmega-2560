@@ -22,4 +22,5 @@ void max7219_init();
 void max7219b_set(uint8_t x, uint8_t y);
 void max7219b_clr(uint8_t x, uint8_t y);
 uint8_t max7219b_get(uint8_t x);
+void max7219b_out(void);
 #endif

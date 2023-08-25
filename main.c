@@ -7,6 +7,9 @@
 #include <time.h>
 #include <stdlib.h>
 #include "generalFunctions.h"
+#include "snake.h"
+#include "analogRead.h"
+#include <stdbool.h>
 
 //// https://wokwi.com/projects/367313440995520513
 
@@ -43,28 +46,6 @@ int randNum2(){
     return r;
 }
 
-void snakePosition(int x, int y){
-	max7219b_set(x, y);
-}
-
-
-void snakeMovement(Snake *snake, Snake_Direction direction){
-	int maxY = 8;
-	int maxX = 32;
-	if(direction == snake_Direction_Down){
-		snake->y_Position = (snake->y_Position + 1 + maxY) % maxY;
-	}
-	if(direction == snake_Direction_Up){
-		snake->y_Position = (snake->y_Position - 1 + maxY) % maxY;
-	}	
-	if(direction == snake_Direction_Right){
-		snake->x_Position = (snake->x_Position + 1) % maxX;
-	}
-	if(direction == snake_Direction_Left){
-		snake->x_Position = (snake->x_Position - 1 + maxX) % maxX;
-	}
-}
-
 int main() {
 
 	BIT_CLEAR(DDRF,VERT_PIN);
@@ -76,6 +57,7 @@ int main() {
     BIT_SET(PORTE,SEL_PIN); 
 
 	Snake snake;
+	Food food;
 	init_serial();
 	max7219_init();
     srandom(time(NULL));   // Call only once!
@@ -85,6 +67,10 @@ int main() {
 	int seed = analogRead(4);
 	srandom(seed);
 	
+	bool foodEaten;
+	bool firstFood = true;
+	// unsigned char foodPositionX;
+    // unsigned char foodPositionY;
 
 
     setPinInput(2);  // Set pin A2 as input
@@ -95,33 +81,41 @@ int main() {
   		int vert = analogRead(VERT_PIN);
 		int lastPositionX;
 		int lastPositionY;
-		int randomX = 0;
-		int randomY = 0;
-        int number1 = randNum();
-        printf("%d\n", randNum);
-        int number2 = randNum2();
-        printf("%d\n", randNum2);
-        // max7219b_set(number1, number2);
+
+		if(firstFood){
+			max7219b_set(food.x_Postion, food.y_Postion);
+			firstFood = false;
+		}
+		if (snake.x_Position == food.x_Postion && snake.y_Position == food.y_Postion){
+			foodEaten = true;
+		}
+		if (foodEaten){
+				food.x_Postion = randNum();
+				food.y_Postion = randNum2();
+				max7219b_set(food.x_Postion, food.y_Postion);
+				foodEaten = false;
+				
+		}
 
 		// max7219b_set(x, y);
 		snakePosition(snake.x_Position, snake.y_Position);
-		_delay_ms(150);
+		_delay_ms(70);
         max7219b_out();
 		lastPositionX = snake.x_Position;
 		lastPositionY = snake.y_Position;
 		snakeMovement(&snake, currentSnakeDirection);
 		max7219b_clr(lastPositionX, lastPositionY);
 
-		if (vert < 300) {
+		if (vert < 300 && currentSnakeDirection != snake_Direction_Up) {
 			currentSnakeDirection = snake_Direction_Down;
 		}
-		if (vert > 700) {
+		if (vert > 700 && currentSnakeDirection != snake_Direction_Down) {
 			currentSnakeDirection = snake_Direction_Up;
 		}
-		if (horz < 300) {
+		if (horz < 300 && currentSnakeDirection != snake_Direction_Left) {
 			currentSnakeDirection = snake_Direction_Right;
 		}
-		if (horz > 700) {
+		if (horz > 700 && currentSnakeDirection != snake_Direction_Right) {
 			currentSnakeDirection = snake_Direction_Left;
 		}
 
@@ -130,32 +124,6 @@ int main() {
 			// }
 
 		//gameText(x, y); PRINT GAME HARDCODED
-
-		// PRINT OUT SOM ROWS
-
-		// for(int i = 0; i < 32;i++){
-		// 	printf("%d\n", i);
-		// 	max7219b_set(i, y);
-		// 	max7219b_out();
-		// 	max7219b_clr(i, y);
-		// 		_delay_ms(50);
-		// }
-		// for(int n = 0; n < 8;n++){
-		// 	printf("%d\n", n);
-		// 	max7219b_set(x, n);
-		// 	max7219b_out();
-		// 	max7219b_clr(x, n);
-		// 		_delay_ms(50);
-		// }
-		// for(int d = 0; d < 32;d++){
-		// 	y = 1;
-		// 	printf("%d\n", d);
-		// 	max7219b_set(d, y);
-		// 	max7219b_out();
-		// 	max7219b_clr(d, y);
-		// 		_delay_ms(50);
-		// }
-		// y = 0;
 
 	}
 	return 0;

@@ -5,13 +5,13 @@ OBJDUMP="C:\avr\bin\avr-objdump"
 AVRSIZE="C:\avr\bin\avr-size"
 OBJISP="C:\avr\bin\avrdude"
 MCU=atmega2560
-CFLAGS=-Wall -Wextra  -Wundef -pedantic \
+CFLAGS=-Wall -Wextra -Wundef -pedantic \
 		-Os -std=gnu99 -DF_CPU=16000000UL -mmcu=${MCU} -DBAUD=11500
 LDFLAGS=-mmcu=$(MCU)
 PORT=\\\\.\\COM3
 BIN=EtchASketch
 OUT=${BIN}.hex
-SOURCES = main.c millis.c uart.c max72xx.c analogRead.c gameText.c
+SOURCES = main.c millis.c uart.c max72xx.c analogRead.c gameText.c snake.c
 
 DEBUG?=1
 
