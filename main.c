@@ -69,9 +69,6 @@ int main() {
 	
 	bool foodEaten;
 	bool firstFood = true;
-	// unsigned char foodPositionX;
-    // unsigned char foodPositionY;
-
 
     setPinInput(2);  // Set pin A2 as input
 
@@ -96,8 +93,6 @@ int main() {
 				foodEaten = false;
 				
 		}
-
-		// max7219b_set(x, y);
 		snakePosition(snake.x_Position, snake.y_Position);
 		_delay_ms(70);
         max7219b_out();
