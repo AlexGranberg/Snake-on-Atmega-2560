@@ -7,8 +7,13 @@ typedef struct{
 }Snake;
 
 typedef struct{
-    unsigned char x_Postion;
-    unsigned char y_Postion;
+    int x;
+    int y;
+}Snake_Segment;
+
+typedef struct{
+    unsigned char x_Position;
+    unsigned char y_Position;
 }Food;
 
 typedef enum{
