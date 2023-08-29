@@ -11,7 +11,7 @@ LDFLAGS=-mmcu=$(MCU)
 PORT=\\\\.\\COM3
 BIN=Snake
 OUT=${BIN}.hex
-SOURCES = main.c millis.c uart.c max72xx.c analogRead.c gameText.c snake.c
+SOURCES = main.c millis.c uart.c max72xx.c analogRead.c gameText.c snake.c generalFunctions.c
 
 DEBUG?=1
 

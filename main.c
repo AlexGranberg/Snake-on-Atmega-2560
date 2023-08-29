@@ -27,33 +27,6 @@
 #define min(X,Y) ((X) < (Y) ? (X) : (Y))
 #define max(X,Y) ((X) > (Y) ? (X) : (Y))
 
-void setPinInput(unsigned char pin) {
-    // Set pin as input using the appropriate registers for your MCU
-    // For Atmega2560
-    DDRF &= ~(1 << pin);    // Set pin direction to input
-    PORTF &= ~(1 << pin);   // Disable internal pull-up resistor
-}
-
-int randNum(){
-    int r;
-    r = random() % 32;
-    return r;
-}
-
-int randNum2(){
-    int r;
-    r = random() % 8;
-    return r;
-}
-
-bool isFoodOnSnake(unsigned char foodX, unsigned char foodY, Snake_Segment *segments, int numSegments) {
-    for (int i = 0; i < numSegments; i++) {
-        if (foodX == segments[i].x && foodY == segments[i].y) {
-            return true;
-        }
-    }
-    return false;
-}
 
 int main() {
 
@@ -70,12 +43,13 @@ int main() {
 	init_serial();
 	max7219_init();
     srandom(time(NULL));   // Call only once!
-	snake.x_Position = 4;
-	snake.y_Position = 4;
+
 	Snake_Direction currentSnakeDirection = snake_Direction_Right;
 	int seed = analogRead(4);
 	srandom(seed);
-	
+
+	snake.x_Position = randNum();
+	snake.y_Position = randNum2();	
 	food.x_Position = randNum();
 	food.y_Position = randNum2();
 	bool foodEaten;

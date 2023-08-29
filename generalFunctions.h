@@ -2,4 +2,7 @@
 #define __generalFunctions_H
 
 
+int randNum();
+int randNum2();
+
 #endif
