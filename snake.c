@@ -34,3 +34,4 @@ bool isFoodOnSnake(unsigned char foodX, unsigned char foodY, Snake_Segment *segm
     }
     return false;
 }
+

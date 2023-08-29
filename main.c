@@ -10,6 +10,8 @@
 #include "snake.h"
 #include "analogRead.h"
 #include <stdbool.h>
+#include "millis.h"
+#include <avr/interrupt.h>
 
 //// https://wokwi.com/projects/367313440995520513
 
@@ -28,6 +30,9 @@
 #define max(X,Y) ((X) > (Y) ? (X) : (Y))
 
 bool isSnakeCollidingWithSnake(int headX, int headY, Snake_Segment *segments, int numSegments){
+	if (numSegments <= 1) {
+		return false;
+	}
 	for (int i = 0; i < numSegments; i++){
 		if(headX == segments[i].x && headY == segments[i].y) {
 			return true;
@@ -48,6 +53,11 @@ int main() {
 
 	Snake snake;
 	Food food;
+	millis_init();
+	sei();
+	unsigned long current_millis = millis_get();
+	unsigned long gameStartTime = current_millis;
+	unsigned long lastActionTime = current_millis;
 	init_serial();
 	max7219_init();
     srandom(time(NULL));   // Call only once!
@@ -72,11 +82,16 @@ int main() {
 	snakeSegments[0].y = snake.y_Position;
 
 	while (1) {
-		
+		current_millis = millis_get();
+    	unsigned long elapsed_millis = current_millis - gameStartTime;
+
 		bool isSnakeColliding = false;
 		isSnakeColliding = isSnakeCollidingWithSnake(snake.x_Position, snake.y_Position, snakeSegments, numberOfSnakeSegments);
+		
+
 		int horz = analogRead(HORZ_PIN);
   		int vert = analogRead(VERT_PIN);
+
 		int lastPositionX;
 		int lastPositionY;
 
@@ -84,38 +99,50 @@ int main() {
 			max7219b_set(food.x_Position, food.y_Position);
 			firstFood = false;
 		}
-		if (snake.x_Position == food.x_Position && snake.y_Position == food.y_Position){
-			foodEaten = true;
-		}
-		if (foodEaten){
-			do {
-        		food.x_Position = randNum();
-        		food.y_Position = randNum2();
-    		}while (isFoodOnSnake(food.x_Position, food.y_Position, snakeSegments, numberOfSnakeSegments));
 
-				food.x_Position = randNum();
-				food.y_Position = randNum2();
+		if (current_millis - lastActionTime >= 150) {
+            lastActionTime = current_millis;
+			if (snake.x_Position == food.x_Position && snake.y_Position == food.y_Position){
+			foodEaten = true;
+			}
+			if (foodEaten){
+				do {
+        			food.x_Position = randNum();
+        			food.y_Position = randNum2();
+    			}while (isFoodOnSnake(food.x_Position, food.y_Position, snakeSegments, numberOfSnakeSegments));
+
 				max7219b_set(food.x_Position, food.y_Position);
 				foodEaten = false;
 			
-			if(numberOfSnakeSegments < 256) {
+			if (numberOfSnakeSegments < 256) {
 				snakeSegments[numberOfSnakeSegments].x = snakeSegments[numberOfSnakeSegments - 1].x;
 				snakeSegments[numberOfSnakeSegments].y = snakeSegments[numberOfSnakeSegments - 1].y;
 				numberOfSnakeSegments++;
 			}				
-		}
+			}
+			snakeSegments[0].x = snake.x_Position;
+			snakeSegments[0].y = snake.y_Position;
 
-		snakeSegments[0].x = snake.x_Position;
-		snakeSegments[0].y = snake.y_Position;
-
-		for(int i = numberOfSnakeSegments - 1; i > 0; i--) {
+			for(int i = numberOfSnakeSegments - 1; i > 0; i--) {
 			snakeSegments[i] = snakeSegments[i - 1];
-		}
+			}
 
-		for(int i = 0; i < numberOfSnakeSegments; i++) {
+			for(int i = 0; i < numberOfSnakeSegments; i++) {
 			max7219b_set(snakeSegments[i].x, snakeSegments[i].y);
-		}
+			}
+		snakePosition(snake.x_Position, snake.y_Position);
+        max7219b_out();
+		max7219b_clr(snakeSegments[numberOfSnakeSegments - 1].x, snakeSegments[numberOfSnakeSegments - 1].y);
+		lastPositionX = snake.x_Position;
+		lastPositionY = snake.y_Position;
+		snakeMovement(&snake, currentSnakeDirection);
+        }
 
+
+
+
+		
+	
 		if (isSnakeColliding) {
 			snake.x_Position = randNum();
             snake.y_Position = randNum2();
@@ -131,15 +158,9 @@ int main() {
             // Clear the display and reset game state
             max7219b_clr_all();
             _delay_ms(2000); // Pause for a moment before restarting
-		}
+			isSnakeColliding = false;
+		}		
 
-		snakePosition(snake.x_Position, snake.y_Position);
-		_delay_ms(70);
-        max7219b_out();
-		max7219b_clr(snakeSegments[numberOfSnakeSegments - 1].x, snakeSegments[numberOfSnakeSegments - 1].y);
-		lastPositionX = snake.x_Position;
-		lastPositionY = snake.y_Position;
-		snakeMovement(&snake, currentSnakeDirection);
 
 		if (vert < 300 && currentSnakeDirection != snake_Direction_Up) {
 			currentSnakeDirection = snake_Direction_Down;

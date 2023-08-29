@@ -2,6 +2,7 @@
 #include "uart.h"
 #include <stdio.h>
 #include "generalFunctions.h"
+#include <time.h>
 
 void setPinInput(unsigned char pin) {
     // Set pin as input using the appropriate registers for your MCU
