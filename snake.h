@@ -1,5 +1,6 @@
 #ifndef __snake_H
 #define __snake_H
+#include <stdbool.h>
 
 typedef struct{
     int x_Position;
