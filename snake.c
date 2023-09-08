@@ -3,27 +3,30 @@
 #include "snake.h"
 #include "max72xx.h"
 #include <stdbool.h>
+#include <util/delay.h>
 
 void snakePosition(int x, int y){
 	max7219b_set(x, y);
 }
 
+void snakeMovement(Snake_Head *snake, Snake_Direction direction, int maxX, int maxY, Game_State *gameState) {
+    if (direction == snake_Direction_Down) {
+        snake->y_Position += 1;
+    }
+    if (direction == snake_Direction_Up) {
+        snake->y_Position -= 1;
+    }   
+    if (direction == snake_Direction_Right) {
+        snake->x_Position += 1;
+    }
+    if (direction == snake_Direction_Left) {
+        snake->x_Position -= 1;
+    }
 
-void snakeMovement(Snake_Head *snake, Snake_Direction direction){
-	int maxY = 8;
-	int maxX = 32;
-	if(direction == snake_Direction_Down){
-		snake->y_Position = (snake->y_Position + 1 + maxY) % maxY;
-	}
-	if(direction == snake_Direction_Up){
-		snake->y_Position = (snake->y_Position - 1 + maxY) % maxY;
-	}	
-	if(direction == snake_Direction_Right){
-		snake->x_Position = (snake->x_Position + 1) % maxX;
-	}
-	if(direction == snake_Direction_Left){
-		snake->x_Position = (snake->x_Position - 1 + maxX) % maxX;
-	}
+    // Check for collisions with boundaries
+    if (snake->x_Position < 0 || snake->x_Position >= maxX || snake->y_Position < 0 || snake->y_Position >= maxY) {
+        *gameState = GAME_OVER;
+    }
 }
 
 bool isFoodOnSnake(unsigned char foodX, unsigned char foodY, Snake_Segment *segments, int numSegments) {
@@ -85,20 +88,20 @@ void updateSnakeSegments(Snake_Head *snake, Snake_Segment snakeSegments[], int n
     for(int i = 0; i < numberOfSnakeSegments; i++) {
         max7219b_set(snakeSegments[i].x, snakeSegments[i].y);
     }
-	printf("%d", numberOfSnakeSegments);
+	//printf("%d", numberOfSnakeSegments);
 }
 
 void controls(int vert, int horz, Snake_Direction *currentSnakeDirection){
-	if (vert < 300 && currentSnakeDirection != snake_Direction_Up) {
+	if (vert < 300 && *currentSnakeDirection != snake_Direction_Up) {
 		*currentSnakeDirection = snake_Direction_Down;
 	}
-	if (vert > 700 && currentSnakeDirection != snake_Direction_Down) {
+	if (vert > 700 && *currentSnakeDirection != snake_Direction_Down) {
 		*currentSnakeDirection = snake_Direction_Up;
 	}
-	if (horz < 300 && currentSnakeDirection != snake_Direction_Left) {
+	if (horz < 300 && *currentSnakeDirection != snake_Direction_Left) {
 		*currentSnakeDirection = snake_Direction_Right;
 	}
-	if (horz > 700 && currentSnakeDirection != snake_Direction_Right) {
+	if (horz > 700 && *currentSnakeDirection != snake_Direction_Right) {
 		*currentSnakeDirection = snake_Direction_Left;
 	}
 }

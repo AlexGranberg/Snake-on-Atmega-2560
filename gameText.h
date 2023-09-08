@@ -1,5 +1,5 @@
-#ifndef __MAX72xx_H
-#define __MAX72xx_H
+#ifndef __GAMETEXT_H
+#define __GAMETEXT_H
 
 #include <avr/io.h>
 
