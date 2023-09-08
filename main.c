@@ -99,7 +99,7 @@ int main() {
 
 			if(firstFood) FoodInit(&firstFood, &food);
 
-			if (current_millis - lastActionTime >= 200) {
+			if (current_millis - lastActionTime >= 150) {
 				lastActionTime = current_millis;
 
 			if (eatFood(&snake, &food, snakeSegments, &numberOfSnakeSegments)) {

@@ -91,19 +91,65 @@ void updateSnakeSegments(Snake_Head *snake, Snake_Segment snakeSegments[], int n
 	//printf("%d", numberOfSnakeSegments);
 }
 
-void controls(int vert, int horz, Snake_Direction *currentSnakeDirection){
-	if (vert < 300 && *currentSnakeDirection != snake_Direction_Up) {
-		*currentSnakeDirection = snake_Direction_Down;
-	}
-	if (vert > 700 && *currentSnakeDirection != snake_Direction_Down) {
-		*currentSnakeDirection = snake_Direction_Up;
-	}
-	if (horz < 300 && *currentSnakeDirection != snake_Direction_Left) {
-		*currentSnakeDirection = snake_Direction_Right;
-	}
-	if (horz > 700 && *currentSnakeDirection != snake_Direction_Right) {
-		*currentSnakeDirection = snake_Direction_Left;
-	}
+// void controls(int vert, int horz, Snake_Direction *currentSnakeDirection){
+// 	if (vert < 300 && *currentSnakeDirection != snake_Direction_Up) {
+// 		*currentSnakeDirection = snake_Direction_Down;
+// 	}
+// 	if (vert > 700 && *currentSnakeDirection != snake_Direction_Down) {
+// 		*currentSnakeDirection = snake_Direction_Up;
+// 	}
+// 	if (horz < 300 && *currentSnakeDirection != snake_Direction_Left) {
+// 		*currentSnakeDirection = snake_Direction_Right;
+// 	}
+// 	if (horz > 700 && *currentSnakeDirection != snake_Direction_Right) {
+// 		*currentSnakeDirection = snake_Direction_Left;
+// 	}
+// }
+
+void controls(int vert, int horz, Snake_Direction *currentSnakeDirection) {
+    static bool isVertical = false;
+    static bool isHorizontal = false;
+    int verticalThreshold = 200;  // Adjust this threshold as needed
+    int horizontalThreshold = 200; // Adjust this threshold as needed
+
+    if (vert < (300 - verticalThreshold)) {
+        // Move the joystick down
+        isVertical = true;
+        isHorizontal = false;
+        if (*currentSnakeDirection != snake_Direction_Up) {
+            *currentSnakeDirection = snake_Direction_Down;
+        }
+    }
+    else if (vert > (700 + verticalThreshold)) {
+        // Move the joystick up
+        isVertical = true;
+        isHorizontal = false;
+        if (*currentSnakeDirection != snake_Direction_Down) {
+            *currentSnakeDirection = snake_Direction_Up;
+        }
+    }
+    else if (horz < (300 - horizontalThreshold)) {
+        // Move the joystick right
+        isHorizontal = true;
+        isVertical = false;
+        if (*currentSnakeDirection != snake_Direction_Left) {
+            *currentSnakeDirection = snake_Direction_Right;
+        }
+    }
+    else if (horz > (700 + horizontalThreshold)) {
+        // Move the joystick left
+        isHorizontal = true;
+        isVertical = false;
+        if (*currentSnakeDirection != snake_Direction_Right) {
+            *currentSnakeDirection = snake_Direction_Left;
+        }
+    }
+    
+    // Prevent diagonal movement by clearing the opposite flag
+    if (isVertical && isHorizontal) {
+        isVertical = false;
+        isHorizontal = false;
+    }
 }
 
 void resetGame(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int *numberOfSnakeSegments, Snake_Direction *currentSnakeDirection, bool *foodEaten, bool *firstFood) {
@@ -120,5 +166,5 @@ void resetGame(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int
 
     // Clear the display and reset game state
     max7219b_clr_all();
-    _delay_ms(2000); // Pause for a moment before restarting
+    _delay_ms(1000); // Pause for a moment before restarting
 }
