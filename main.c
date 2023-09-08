@@ -29,6 +29,8 @@
 #define min(X,Y) ((X) < (Y) ? (X) : (Y))
 #define max(X,Y) ((X) > (Y) ? (X) : (Y))
 
+
+
 int main() {
 
 	BIT_CLEAR(DDRF,VERT_PIN);
@@ -39,7 +41,7 @@ int main() {
 	BIT_CLEAR(DDRE,SEL_PIN); // INPUT MODE
     BIT_SET(PORTE,SEL_PIN); 
 
-	Snake snake;
+	Snake_Head snake;
 	Food food;
 	millis_init();
 	sei();
@@ -65,7 +67,7 @@ int main() {
     setPinInput(2);  // Set pin A2 as input
 
 	Snake_Segment snakeSegments[256];
-	int numberOfSnakeSegments = 0;
+	int numberOfSnakeSegments = 1;
 
 	while (1) {
 		current_millis = millis_get();
@@ -106,36 +108,12 @@ int main() {
 		
 	
 		if (isSnakeColliding) {
-			snake.x_Position = randNum();
-            snake.y_Position = randNum2();
-            food.x_Position = randNum();
-            food.y_Position = randNum2();
-            foodEaten = false;
-            firstFood = true;
-            numberOfSnakeSegments = 1;
-            snakeSegments[0].x = snake.x_Position;
-            snakeSegments[0].y = snake.y_Position;
-            currentSnakeDirection = snake_Direction_Right;
-
-            // Clear the display and reset game state
-            max7219b_clr_all();
-            _delay_ms(2000); // Pause for a moment before restarting
-			isSnakeColliding = false;
+    		resetGame(&snake, &food, snakeSegments, &numberOfSnakeSegments, &currentSnakeDirection, &foodEaten, &firstFood);
+    		isSnakeColliding = false;
 		}		
 
+		controls(vert, horz, &currentSnakeDirection);
 
-		if (vert < 300 && currentSnakeDirection != snake_Direction_Up) {
-			currentSnakeDirection = snake_Direction_Down;
-		}
-		if (vert > 700 && currentSnakeDirection != snake_Direction_Down) {
-			currentSnakeDirection = snake_Direction_Up;
-		}
-		if (horz < 300 && currentSnakeDirection != snake_Direction_Left) {
-			currentSnakeDirection = snake_Direction_Right;
-		}
-		if (horz > 700 && currentSnakeDirection != snake_Direction_Right) {
-			currentSnakeDirection = snake_Direction_Left;
-		}
 
 			// if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {
     		// 	max7219b_clr_all();

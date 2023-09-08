@@ -5,7 +5,7 @@
 typedef struct{
     int x_Position;
     int y_Position;
-}Snake;
+}Snake_Head;
 
 typedef struct{
     int x;
@@ -26,11 +26,13 @@ typedef enum{
 
 
 void snakePosition(int x, int y);
-void snakeMovement(Snake *snake, Snake_Direction direction);
+void snakeMovement(Snake_Head *snake, Snake_Direction direction);
 bool isFoodOnSnake(unsigned char foodX, unsigned char foodY, Snake_Segment *segments, int numSegments);
 bool isSnakeCollidingWithSnake(int headX, int headY, Snake_Segment *segments, int numSegments);
-bool eatFood(Snake *snake, Food *food, Snake_Segment snakeSegments[], int *numberOfSnakeSegments);
+bool eatFood(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int *numberOfSnakeSegments);
 void FoodInit(bool *firstFood, Food *food);
-void updateSnakeSegments(Snake *snake, Snake_Segment snakeSegments[], int numberOfSnakeSegments);
+void updateSnakeSegments(Snake_Head *snake, Snake_Segment snakeSegments[], int numberOfSnakeSegments);
+void controls(int vert, int horz, Snake_Direction *currentSnakeDirection);
+void resetGame(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int *numberOfSnakeSegments, Snake_Direction *currentSnakeDirection, bool *foodEaten, bool *firstFood);
 
 #endif
