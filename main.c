@@ -43,6 +43,7 @@ int main() {
 
 	Snake_Head snake;
 	Food food;
+	Game_State gameState = GAME_START;
 	millis_init();
 	sei();
 	unsigned long current_millis = millis_get();
@@ -62,6 +63,11 @@ int main() {
 	food.y_Position = randNum2();
 	bool foodEaten = false;
 	bool firstFood = true;
+	int gametextY;
+	int gametextX;
+	bool isSnakeColliding = false;
+	int horz = analogRead(HORZ_PIN);
+	int vert = analogRead(VERT_PIN);
 
 
     setPinInput(2);  // Set pin A2 as input
@@ -73,53 +79,72 @@ int main() {
 		current_millis = millis_get();
     	unsigned long elapsed_millis = current_millis - gameStartTime;
 
-		bool isSnakeColliding = false;
-		isSnakeColliding = isSnakeCollidingWithSnake(snake.x_Position, snake.y_Position, snakeSegments, numberOfSnakeSegments);
+		switch (gameState) {
+		case GAME_START:
+			gameText(gametextX, gametextY);
+
+            if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {
+                resetGame(&snake, &food, snakeSegments, &numberOfSnakeSegments, &currentSnakeDirection, &foodEaten, &firstFood);
+                gameState = PLAYING;
+            }
+			break;
 		
-		int horz = analogRead(HORZ_PIN);
-  		int vert = analogRead(VERT_PIN);
+		case PLAYING:
 
-		int lastPositionX;
-		int lastPositionY;
+			horz = analogRead(HORZ_PIN);
+			vert = analogRead(VERT_PIN);
 
-		if(firstFood) FoodInit(&firstFood, &food);
+			int lastPositionX;
+			int lastPositionY;
 
-		if (current_millis - lastActionTime >= 150) {
-            lastActionTime = current_millis;
+			if(firstFood) FoodInit(&firstFood, &food);
 
-		if (eatFood(&snake, &food, snakeSegments, &numberOfSnakeSegments)) {
-            do {
-                food.x_Position = randNum();
-                food.y_Position = randNum2();
-            } while (isFoodOnSnake(food.x_Position, food.y_Position, snakeSegments, numberOfSnakeSegments));
+			if (current_millis - lastActionTime >= 200) {
+				lastActionTime = current_millis;
 
-            max7219b_set(food.x_Position, food.y_Position);
-            foodEaten = false;
-        }
+			if (eatFood(&snake, &food, snakeSegments, &numberOfSnakeSegments)) {
+				do {
+					food.x_Position = randNum();
+					food.y_Position = randNum2();
+				} while (isFoodOnSnake(food.x_Position, food.y_Position, snakeSegments, numberOfSnakeSegments));
 
-		updateSnakeSegments(&snake, snakeSegments, numberOfSnakeSegments);
-		snakePosition(snake.x_Position, snake.y_Position);
-       	max7219b_out();
-		max7219b_clr(snakeSegments[numberOfSnakeSegments - 1].x, snakeSegments[numberOfSnakeSegments - 1].y);
-		lastPositionX = snake.x_Position;
-		lastPositionY = snake.y_Position;
-		snakeMovement(&snake, currentSnakeDirection);
-        }
-		
+				max7219b_set(food.x_Position, food.y_Position);
+				foodEaten = false;
+			}
+
+			updateSnakeSegments(&snake, snakeSegments, numberOfSnakeSegments);
+			snakePosition(snake.x_Position, snake.y_Position);
+			max7219b_out();
+			max7219b_clr(snakeSegments[numberOfSnakeSegments - 1].x, snakeSegments[numberOfSnakeSegments - 1].y);
+			snakeMovement(&snake, currentSnakeDirection, 32, 8, &gameState); //plus checking for boundaries collision
+
+			lastPositionX = snake.x_Position;
+			lastPositionY = snake.y_Position;
+			}
+			isSnakeColliding = isSnakeCollidingWithSnake(snake.x_Position, snake.y_Position, snakeSegments, numberOfSnakeSegments);
+			break;
+
+		case GAME_OVER:
+			max7219b_clr_all();
+			gameText(gametextX, gametextY);
+
+            if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {
+
+                resetGame(&snake, &food, snakeSegments, &numberOfSnakeSegments, &currentSnakeDirection, &foodEaten, &firstFood);
+                gameState = PLAYING;
+            }
+			break;
+		default:
+
+			break;
+		}
 	
 		if (isSnakeColliding) {
-    		resetGame(&snake, &food, snakeSegments, &numberOfSnakeSegments, &currentSnakeDirection, &foodEaten, &firstFood);
+    		gameState = GAME_OVER;
     		isSnakeColliding = false;
 		}		
 
 		controls(vert, horz, &currentSnakeDirection);
-
-
-			// if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {
-    		// 	max7219b_clr_all();
-			// }
-
-		//gameText(x, y); PRINT GAME HARDCODED
 
 	}
 	return 0;
