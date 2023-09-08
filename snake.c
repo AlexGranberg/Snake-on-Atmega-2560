@@ -35,3 +35,38 @@ bool isFoodOnSnake(unsigned char foodX, unsigned char foodY, Snake_Segment *segm
     return false;
 }
 
+bool isSnakeCollidingWithSnake(int headX, int headY, Snake_Segment *segments, int numSegments){
+	if (numSegments <= 1) {
+		return false;
+	}
+	for (int i = 0; i < numSegments; i++){
+		if(headX == segments[i].x && headY == segments[i].y) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool eatFood(Snake *snake, Food *food, Snake_Segment snakeSegments[], int *numberOfSnakeSegments) {
+    if (snake->x_Position == food->x_Position && snake->y_Position == food->y_Position) {
+        // Food is eaten
+        food->x_Position = randNum();
+        food->y_Position = randNum2();
+        
+        if (*numberOfSnakeSegments < 256) {
+            // Add a segment to the snake
+            snakeSegments[*numberOfSnakeSegments].x = snakeSegments[*numberOfSnakeSegments - 1].x;
+            snakeSegments[*numberOfSnakeSegments].y = snakeSegments[*numberOfSnakeSegments - 1].y;
+            (*numberOfSnakeSegments)++;
+        }
+        
+        return true;
+    }
+    
+    return false;
+}
+
+void FoodInit(bool firstFood, Food *food){
+	max7219b_set(food->x_Position, food->y_Position);
+	firstFood = false;
+}

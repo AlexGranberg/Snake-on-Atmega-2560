@@ -29,18 +29,6 @@
 #define min(X,Y) ((X) < (Y) ? (X) : (Y))
 #define max(X,Y) ((X) > (Y) ? (X) : (Y))
 
-bool isSnakeCollidingWithSnake(int headX, int headY, Snake_Segment *segments, int numSegments){
-	if (numSegments <= 1) {
-		return false;
-	}
-	for (int i = 0; i < numSegments; i++){
-		if(headX == segments[i].x && headY == segments[i].y) {
-			return true;
-		}
-	}
-	return false;
-}
-
 int main() {
 
 	BIT_CLEAR(DDRF,VERT_PIN);
@@ -88,38 +76,26 @@ int main() {
 		bool isSnakeColliding = false;
 		isSnakeColliding = isSnakeCollidingWithSnake(snake.x_Position, snake.y_Position, snakeSegments, numberOfSnakeSegments);
 		
-
 		int horz = analogRead(HORZ_PIN);
   		int vert = analogRead(VERT_PIN);
 
 		int lastPositionX;
 		int lastPositionY;
 
-		if(firstFood){
-			max7219b_set(food.x_Position, food.y_Position);
-			firstFood = false;
-		}
+		if(firstFood) FoodInit(firstFood, &food);
 
 		if (current_millis - lastActionTime >= 150) {
             lastActionTime = current_millis;
-			if (snake.x_Position == food.x_Position && snake.y_Position == food.y_Position){
-			foodEaten = true;
-			}
-			if (foodEaten){
-				do {
-        			food.x_Position = randNum();
-        			food.y_Position = randNum2();
-    			}while (isFoodOnSnake(food.x_Position, food.y_Position, snakeSegments, numberOfSnakeSegments));
 
-				max7219b_set(food.x_Position, food.y_Position);
-				foodEaten = false;
-			
-			if (numberOfSnakeSegments < 256) {
-				snakeSegments[numberOfSnakeSegments].x = snakeSegments[numberOfSnakeSegments - 1].x;
-				snakeSegments[numberOfSnakeSegments].y = snakeSegments[numberOfSnakeSegments - 1].y;
-				numberOfSnakeSegments++;
-			}				
-			}
+		if (eatFood(&snake, &food, snakeSegments, &numberOfSnakeSegments)) {
+            do {
+                food.x_Position = randNum();
+                food.y_Position = randNum2();
+            } while (isFoodOnSnake(food.x_Position, food.y_Position, snakeSegments, numberOfSnakeSegments));
+
+            max7219b_set(food.x_Position, food.y_Position);
+            foodEaten = false;
+        }
 			snakeSegments[0].x = snake.x_Position;
 			snakeSegments[0].y = snake.y_Position;
 

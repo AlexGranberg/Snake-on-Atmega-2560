@@ -28,5 +28,8 @@ typedef enum{
 void snakePosition(int x, int y);
 void snakeMovement(Snake *snake, Snake_Direction direction);
 bool isFoodOnSnake(unsigned char foodX, unsigned char foodY, Snake_Segment *segments, int numSegments);
+bool isSnakeCollidingWithSnake(int headX, int headY, Snake_Segment *segments, int numSegments);
+bool eatFood(Snake *snake, Food *food, Snake_Segment snakeSegments[], int *numberOfSnakeSegments);
+void FoodInit(bool firstFood, Food *food);
 
 #endif

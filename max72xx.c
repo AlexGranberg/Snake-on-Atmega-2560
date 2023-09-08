@@ -44,38 +44,12 @@ void max7219_init() {
 
 //WOKWI
 
-// void max7219b_out(void) {
-//     uint8_t bit_mask = 0x80;
-//     for (uint8_t row = 8; row >= 1; row--) {
-//         uint8_t buffer_seg = 0;
-//         MAX7219_CS_LO();
-//         while (buffer_seg <= MAX7219_BUFFER_SIZE) {
-//             max7219_byte(row);
-//             for (uint8_t index = 8; index != 0; index--) {
-//                 uint8_t col = max7219_buffer[buffer_seg + index - 9];
-//                 MAX7219_CLK_LO();
-//                 if (col & bit_mask)
-//                     MAX7219_DIN_HI();
-//                 else
-//                     MAX7219_DIN_LO();
-//                 MAX7219_CLK_HI();
-//             }
-//             buffer_seg += 8;
-//         }
-//         MAX7219_CS_HI();
-//         MAX7219_CLK_LO();
-//         bit_mask >>= 1;
-//     }
-// }
-
-//PHYSICAL
-
 void max7219b_out(void) {
     uint8_t bit_mask = 0x80;
-    for (uint8_t row = 1; row <= 8; row++) {
-        uint8_t buffer_seg = MAX7219_BUFFER_SIZE;
+    for (uint8_t row = 8; row >= 1; row--) {
+        uint8_t buffer_seg = 0;
         MAX7219_CS_LO();
-        while (buffer_seg != 0) {
+        while (buffer_seg <= MAX7219_BUFFER_SIZE) {
             max7219_byte(row);
             for (uint8_t index = 8; index != 0; index--) {
                 uint8_t col = max7219_buffer[buffer_seg + index - 9];
@@ -86,13 +60,39 @@ void max7219b_out(void) {
                     MAX7219_DIN_LO();
                 MAX7219_CLK_HI();
             }
-            buffer_seg -= 8;
+            buffer_seg += 8;
         }
         MAX7219_CS_HI();
         MAX7219_CLK_LO();
         bit_mask >>= 1;
     }
 }
+
+//PHYSICAL
+
+// void max7219b_out(void) {
+//     uint8_t bit_mask = 0x80;
+//     for (uint8_t row = 1; row <= 8; row++) {
+//         uint8_t buffer_seg = MAX7219_BUFFER_SIZE;
+//         MAX7219_CS_LO();
+//         while (buffer_seg != 0) {
+//             max7219_byte(row);
+//             for (uint8_t index = 8; index != 0; index--) {
+//                 uint8_t col = max7219_buffer[buffer_seg + index - 9];
+//                 MAX7219_CLK_LO();
+//                 if (col & bit_mask)
+//                     MAX7219_DIN_HI();
+//                 else
+//                     MAX7219_DIN_LO();
+//                 MAX7219_CLK_HI();
+//             }
+//             buffer_seg -= 8;
+//         }
+//         MAX7219_CS_HI();
+//         MAX7219_CLK_LO();
+//         bit_mask >>= 1;
+//     }
+// }
  
 void max7219b_set(uint8_t x, uint8_t y) {
 
