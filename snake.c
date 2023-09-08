@@ -66,7 +66,24 @@ bool eatFood(Snake *snake, Food *food, Snake_Segment snakeSegments[], int *numbe
     return false;
 }
 
-void FoodInit(bool firstFood, Food *food){
+void FoodInit(bool *firstFood, Food *food){
 	max7219b_set(food->x_Position, food->y_Position);
-	firstFood = false;
+	*firstFood = false;
+}
+
+void updateSnakeSegments(Snake *snake, Snake_Segment snakeSegments[], int numberOfSnakeSegments) {
+    // Update the head of the snake
+    snakeSegments[0].x = snake->x_Position;
+    snakeSegments[0].y = snake->y_Position;
+
+    // Shift the segments
+    for(int i = numberOfSnakeSegments - 1; i > 0; i--) {
+        snakeSegments[i] = snakeSegments[i - 1];
+    }
+
+    // Update the display with the new segments
+    for(int i = 0; i < numberOfSnakeSegments; i++) {
+        max7219b_set(snakeSegments[i].x, snakeSegments[i].y);
+    }
+	printf("%d", numberOfSnakeSegments);
 }

@@ -58,16 +58,14 @@ int main() {
 	snake.y_Position = randNum2();	
 	food.x_Position = randNum();
 	food.y_Position = randNum2();
-	bool foodEaten;
+	bool foodEaten = false;
 	bool firstFood = true;
 
 
     setPinInput(2);  // Set pin A2 as input
 
 	Snake_Segment snakeSegments[256];
-	int numberOfSnakeSegments = 1;
-	snakeSegments[0].x = snake.x_Position;
-	snakeSegments[0].y = snake.y_Position;
+	int numberOfSnakeSegments = 0;
 
 	while (1) {
 		current_millis = millis_get();
@@ -82,7 +80,7 @@ int main() {
 		int lastPositionX;
 		int lastPositionY;
 
-		if(firstFood) FoodInit(firstFood, &food);
+		if(firstFood) FoodInit(&firstFood, &food);
 
 		if (current_millis - lastActionTime >= 150) {
             lastActionTime = current_millis;
@@ -96,27 +94,15 @@ int main() {
             max7219b_set(food.x_Position, food.y_Position);
             foodEaten = false;
         }
-			snakeSegments[0].x = snake.x_Position;
-			snakeSegments[0].y = snake.y_Position;
 
-			for(int i = numberOfSnakeSegments - 1; i > 0; i--) {
-			snakeSegments[i] = snakeSegments[i - 1];
-			}
-
-			for(int i = 0; i < numberOfSnakeSegments; i++) {
-			max7219b_set(snakeSegments[i].x, snakeSegments[i].y);
-			}
+		updateSnakeSegments(&snake, snakeSegments, numberOfSnakeSegments);
 		snakePosition(snake.x_Position, snake.y_Position);
-        max7219b_out();
+       	max7219b_out();
 		max7219b_clr(snakeSegments[numberOfSnakeSegments - 1].x, snakeSegments[numberOfSnakeSegments - 1].y);
 		lastPositionX = snake.x_Position;
 		lastPositionY = snake.y_Position;
 		snakeMovement(&snake, currentSnakeDirection);
         }
-
-
-
-
 		
 	
 		if (isSnakeColliding) {
