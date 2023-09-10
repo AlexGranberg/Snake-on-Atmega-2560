@@ -61,8 +61,6 @@ int main() {
 	food.y_Position = randNum2();
 	bool foodEaten = false;
 	bool firstFood = true;
-	int gametextY;
-	int gametextX;
 	bool isSnakeColliding = false;
 	int horz = analogRead(HORZ_PIN);
 	int vert = analogRead(VERT_PIN);
@@ -79,7 +77,7 @@ int main() {
 
 		switch (gameState) {
 		case GAME_START:
-			gameText(gametextX, gametextY);
+			gameText2();
 
             if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {
                 resetGame(&snake, &food, snakeSegments, &numberOfSnakeSegments, &currentSnakeDirection, &foodEaten, &firstFood);
@@ -124,7 +122,8 @@ int main() {
 
 		case GAME_OVER:
 			max7219b_clr_all();
-			gameText(gametextX, gametextY);
+			//gameText(gametextX, gametextY);
+			gameText2();
 			
 
             if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {
