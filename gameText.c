@@ -4,6 +4,7 @@
 #include <string.h>
 #include <util/delay.h>
 
+
 void gameText(int x, int y) {
 
     //  G

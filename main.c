@@ -29,8 +29,6 @@
 #define min(X,Y) ((X) < (Y) ? (X) : (Y))
 #define max(X,Y) ((X) > (Y) ? (X) : (Y))
 
-
-
 int main() {
 
 	BIT_CLEAR(DDRF,VERT_PIN);
@@ -51,7 +49,7 @@ int main() {
 	unsigned long lastActionTime = current_millis;
 	init_serial();
 	max7219_init();
-    srandom(time(NULL));   // Call only once!
+    srandom(time(NULL));
 
 	Snake_Direction currentSnakeDirection = snake_Direction_Right;
 	int seed = analogRead(4);
@@ -127,6 +125,7 @@ int main() {
 		case GAME_OVER:
 			max7219b_clr_all();
 			gameText(gametextX, gametextY);
+			
 
             if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {
 

@@ -30,6 +30,7 @@ void snakeMovement(Snake_Head *snake, Snake_Direction direction, int maxX, int m
 }
 
 bool isFoodOnSnake(unsigned char foodX, unsigned char foodY, Snake_Segment *segments, int numSegments) {
+    // Make sure food doesn't spawn on snake
     for (int i = 0; i < numSegments; i++) {
         if (foodX == segments[i].x && foodY == segments[i].y) {
             return true;
@@ -91,26 +92,12 @@ void updateSnakeSegments(Snake_Head *snake, Snake_Segment snakeSegments[], int n
 	//printf("%d", numberOfSnakeSegments);
 }
 
-// void controls(int vert, int horz, Snake_Direction *currentSnakeDirection){
-// 	if (vert < 300 && *currentSnakeDirection != snake_Direction_Up) {
-// 		*currentSnakeDirection = snake_Direction_Down;
-// 	}
-// 	if (vert > 700 && *currentSnakeDirection != snake_Direction_Down) {
-// 		*currentSnakeDirection = snake_Direction_Up;
-// 	}
-// 	if (horz < 300 && *currentSnakeDirection != snake_Direction_Left) {
-// 		*currentSnakeDirection = snake_Direction_Right;
-// 	}
-// 	if (horz > 700 && *currentSnakeDirection != snake_Direction_Right) {
-// 		*currentSnakeDirection = snake_Direction_Left;
-// 	}
-// }
 
 void controls(int vert, int horz, Snake_Direction *currentSnakeDirection) {
     static bool isVertical = false;
     static bool isHorizontal = false;
-    int verticalThreshold = 200;  // Adjust this threshold as needed
-    int horizontalThreshold = 200; // Adjust this threshold as needed
+    int verticalThreshold = 200;  
+    int horizontalThreshold = 200;
 
     if (vert < (300 - verticalThreshold)) {
         // Move the joystick down
