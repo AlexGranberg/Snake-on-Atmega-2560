@@ -9,12 +9,14 @@ This README provides an overview of the Snake Game code contained in multiple so
 The Snake Game is implemented in C for an AVR microcontroller, and it uses an LED matrix for display. The game logic, 
 display functions, and user controls are distributed across several source files to maintain code organization and readability.
 
+
 ## Hardware
 
 This project assumes the use of an AVR microcontroller, in this case the Atmega2560, an LED matrix controlled by the MAX7219 driver, 
 a joystick for user input, and a UART module for serial communication.
 
 <img width="665" alt="snake_on_atmega" src="https://github.com/AlexGranberg/Snake-on-Atmega-2560/assets/42450559/13d9d717-070e-4421-8d21-4886389d2a83">
+
 
 ## Getting Started
 
@@ -24,6 +26,7 @@ need to install an AVR development environment (such as AVR-GCC) and program you
 You could also test it out on wokwi: https://wokwi.com/projects/367313440995520513
 
 Please refer to the individual source files for more details on the functions and how they work together to create the Snake Game.
+
 
 ## Files
 
@@ -68,6 +71,7 @@ for debugging and sending messages from the microcontroller to a connected termi
 `millis.c` is responsible for implementing a simple millisecond timer using the AVR Timer1. It includes functions for 
 initializing the timer and getting the current millisecond count.
 
+
 ## Makefile
 
 The project includes a Makefile for building and programming the code onto an AVR microcontroller, specifically the ATmega2560. 
@@ -105,6 +109,7 @@ To program the microcontroller, use the make isp target. Make sure to connect yo
 port (-PCOMX) in the OBJISP variable.
 
 To clean the project directory and remove generated files, run make clean.
+
 
 ## Acknowledgments
 
