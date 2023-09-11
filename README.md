@@ -26,7 +26,7 @@ need to install an AVR development environment (such as AVR-GCC) and program you
 You could also test it out on wokwi: https://wokwi.com/projects/367313440995520513
 
 Inside the max72xx.c file there are two variants of the function void max7219b_out(void), one is for physical and one for simulation.
-needed to get the orientation of the led matrix in order.
+Needed to get the orientation of the led matrix in order.
 
 Please refer to the individual source files for more details on the functions and how they work together to create the Snake Game.
 
