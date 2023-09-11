@@ -4,69 +4,106 @@
 #include <string.h>
 #include <util/delay.h>
 
-void gameText(int x, int y) {
+// Function to display a character on the LED matrix
+void displayCharacter(char character, int x, int y) {
+    // Define a 5x8 font for characters
+    char font[8];
 
-    //  G
-    max7219b_set(3 + x, 3 + y);
-    max7219b_set(3 + x, 4 + y);
-    max7219b_set(3 + x, 5 + y);
-    max7219b_set(3 + x, 6 + y);
-    max7219b_set(3 + x, 7 + y);
-    max7219b_set(4 + x, 3 + y);
-    max7219b_set(5 + x, 3 + y);
-    max7219b_set(6 + x, 3 + y);
-    max7219b_set(4 + x, 7 + y);
-    max7219b_set(5 + x, 7 + y);
-    max7219b_set(6 + x, 7 + y);
-    max7219b_set(6 + x, 6 + y);
-    max7219b_set(6 + x, 5 + y);
-    max7219b_set(5 + x, 5 + y);
-    
-    //  A
-    max7219b_set(8 + x, 3 + y);
-    max7219b_set(8 + x, 4 + y);
-    max7219b_set(8 + x, 5 + y);
-    max7219b_set(8 + x, 6 + y);
-    max7219b_set(8 + x, 7 + y);
-    max7219b_set(9 + x, 3 + y);
-    max7219b_set(10 + x, 3 + y);
-    max7219b_set(11 + x, 3 + y);
-    max7219b_set(9 + x, 5 + y);
-    max7219b_set(10 + x, 5 + y);
-    max7219b_set(11 + x, 5 + y);
-    max7219b_set(11 + x, 4 + y);
-    max7219b_set(11 + x, 6 + y);
-    max7219b_set(11 + x, 7 + y);
+    switch (character) {
+        case 'G':
+            font[0] = 0b0111100;
+            font[1] = 0b1000010;
+            font[2] = 0b1010010;
+            font[3] = 0b1110010;
+            font[4] = 0b0000000;
+            break;
+        case 'A':
+            font[0] = 0b1111100;
+            font[1] = 0b0010010;
+            font[2] = 0b0010010;
+            font[3] = 0b1111100;
+            font[4] = 0b0000000;
+            break;
+        case 'M':
+            font[0] = 0b1111110;
+            font[1] = 0b0000100;
+            font[2] = 0b0011000;
+            font[3] = 0b0000100;
+            font[4] = 0b1111110;
+            break;
+        case 'E':
+            font[0] = 0b1111110;
+            font[1] = 0b1010010;
+            font[2] = 0b1010010;
+            font[3] = 0b1000010;
+            font[4] = 0b0000000;
+            break;
+        case 'W':
+            font[0] = 0b1111110;
+            font[1] = 0b0100000;
+            font[2] = 0b0011000;
+            font[3] = 0b0100000;
+            font[4] = 0b1111110;
+            break;
+        case 'I':
+            font[0] = 0b1111110;
+            font[1] = 0b0000000;
+            font[2] = 0b0000000;
+            font[3] = 0b0000000;
+            font[4] = 0b0000000;
+            break;
+        case 'N':
+            font[0] = 0b1111110;
+            font[1] = 0b0000100;
+            font[2] = 0b0001000;
+            font[3] = 0b0010000;
+            font[4] = 0b1111110;
+            break;
+        case 'D':
+            font[0] = 0b1111110;
+            font[1] = 0b1000010;
+            font[2] = 0b1000010;
+            font[3] = 0b0111100;
+            font[4] = 0b0000000;
+            break;
+        default:
+            // Default font for unknown characters
+            font[0] = 0b0000000;
+            font[1] = 0b0000000;
+            font[2] = 0b0000000;
+            font[3] = 0b0000000;
+            font[4] = 0b0000000;
+            break;
+    }
 
-    //  M
-    max7219b_set(13 + x, 3 + y);
-    max7219b_set(13 + x, 4 + y);
-    max7219b_set(13 + x, 5 + y);
-    max7219b_set(13 + x, 6 + y);
-    max7219b_set(13 + x, 7 + y);
-    max7219b_set(14 + x, 3 + y);
-    max7219b_set(15 + x, 4 + y);
-    max7219b_set(15 + x, 5 + y);
-    max7219b_set(16 + x, 3 + y);
-    max7219b_set(17 + x, 3 + y);
-    max7219b_set(17 + x, 4 + y);
-    max7219b_set(17 + x, 5 + y);
-    max7219b_set(17 + x, 6 + y);
-    max7219b_set(17 + x, 7 + y);
+    // Display the character on the matrix
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 8; j++) {
+            if ((font[i] >> j) & 1) {
+                max7219b_set(x + i, y + j);
+            }
+        }
+    }
+}
 
-    //  E
-    max7219b_set(19 + x, 3 + y);
-    max7219b_set(19 + x, 4 + y);
-    max7219b_set(19 + x, 5 + y);
-    max7219b_set(19 + x, 6 + y);
-    max7219b_set(19 + x, 7 + y);
-    max7219b_set(20 + x, 3 + y);
-    max7219b_set(21 + x, 3 + y);
-    max7219b_set(22 + x, 3 + y);
-    max7219b_set(20 + x, 7 + y);
-    max7219b_set(21 + x, 7 + y);
-    max7219b_set(22 + x, 7 + y);
-    max7219b_set(20 + x, 5 + y);
-    max7219b_set(21 + x, 5 + y);
+// Function to display text on the LED matrix
+void displayText(const char* text, int x, int y) {
+    int xOffset = 0;
+    while (*text) {
+        char character = *text;
+        if (character == 'M' || character == 'W'|| character == 'N') {
+            displayCharacter(character, x + xOffset, y);
+            xOffset += 7; // Adjust the horizontal spacing for wider characters
+        }
+        else if (character == 'I') {
+            displayCharacter(character, x + xOffset, y);
+            xOffset += 3; // Adjust the horizontal spacing for wider characters
+        } 
+        else {
+            displayCharacter(character, x + xOffset, y);
+            xOffset += 6; // Adjust the horizontal spacing between characters
+        }
+        text++;
+    }
     max7219b_out();
 }

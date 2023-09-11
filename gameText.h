@@ -3,6 +3,6 @@
 
 #include <avr/io.h>
 
-void gameText(int x, int y);
+void displayCharacter(char character, int x, int y);
 
 #endif
