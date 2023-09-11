@@ -62,6 +62,13 @@ void displayCharacter(char character, int x, int y) {
             font[3] = 0b0010000;
             font[4] = 0b1111110;
             break;
+        case 'D':
+            font[0] = 0b1111110;
+            font[1] = 0b1000010;
+            font[2] = 0b1000010;
+            font[3] = 0b0111100;
+            font[4] = 0b0000000;
+            break;
         default:
             // Default font for unknown characters
             font[0] = 0b0000000;
@@ -104,11 +111,7 @@ void displayText(const char* text, int x, int y) {
     max7219b_out();
 }
 
-
-// // Example usage
-void gameText2() {
-    displayText("WINN", 0, 0);
-    // Add more text or characters as needed
-    // ...
+void gameTextWin() {
+    displayText("WIN", 5, 0);
     max7219b_out();
 }

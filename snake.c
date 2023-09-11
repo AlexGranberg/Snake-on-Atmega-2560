@@ -51,7 +51,7 @@ bool isSnakeCollidingWithSnake(int headX, int headY, Snake_Segment *segments, in
 	return false;
 }
 
-bool eatFood(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int *numberOfSnakeSegments) {
+bool eatFood(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int *numberOfSnakeSegments, Game_State *gameState) {
     if (snake->x_Position == food->x_Position && snake->y_Position == food->y_Position) {
         // Food is eaten
         food->x_Position = randNum();
@@ -62,6 +62,9 @@ bool eatFood(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int *
             snakeSegments[*numberOfSnakeSegments].x = snakeSegments[*numberOfSnakeSegments - 1].x;
             snakeSegments[*numberOfSnakeSegments].y = snakeSegments[*numberOfSnakeSegments - 1].y;
             (*numberOfSnakeSegments)++;
+        }
+        else {
+            *gameState = WIN;
         }
         
         return true;
@@ -84,7 +87,7 @@ void updateSnakeSegments(Snake_Head *snake, Snake_Segment snakeSegments[], int n
     for(int i = numberOfSnakeSegments - 1; i > 0; i--) {
         snakeSegments[i] = snakeSegments[i - 1];
     }
-
+ 
     // Update the display with the new segments
     for(int i = 0; i < numberOfSnakeSegments; i++) {
         max7219b_set(snakeSegments[i].x, snakeSegments[i].y);

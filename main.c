@@ -77,7 +77,8 @@ int main() {
 
 		switch (gameState) {
 		case GAME_START:
-			gameText2();
+			//displayText("WIN", 8, 0);
+			displayText("GAME", 4, 0);
 
             if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {
                 resetGame(&snake, &food, snakeSegments, &numberOfSnakeSegments, &currentSnakeDirection, &foodEaten, &firstFood);
@@ -98,7 +99,7 @@ int main() {
 			if (current_millis - lastActionTime >= 150) {
 				lastActionTime = current_millis;
 
-			if (eatFood(&snake, &food, snakeSegments, &numberOfSnakeSegments)) {
+			if (eatFood(&snake, &food, snakeSegments, &numberOfSnakeSegments, &gameState)) {
 				do {
 					food.x_Position = randNum();
 					food.y_Position = randNum2();
@@ -122,8 +123,18 @@ int main() {
 
 		case GAME_OVER:
 			max7219b_clr_all();
-			//gameText(gametextX, gametextY);
-			gameText2();
+			displayText("END", 7, 0);
+			
+
+            if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {
+
+                resetGame(&snake, &food, snakeSegments, &numberOfSnakeSegments, &currentSnakeDirection, &foodEaten, &firstFood);
+                gameState = PLAYING;
+            }
+			break;
+		case WIN:
+			max7219b_clr_all();
+			displayText("WIN", 7, 0);
 			
 
             if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {
