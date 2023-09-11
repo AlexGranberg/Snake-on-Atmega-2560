@@ -68,7 +68,7 @@ for debugging and sending messages from the microcontroller to a connected termi
 `millis.c` is responsible for implementing a simple millisecond timer using the AVR Timer1. It includes functions for 
 initializing the timer and getting the current millisecond count.
 
-### Makefile
+## Makefile
 
 The project includes a Makefile for building and programming the code onto an AVR microcontroller, specifically the ATmega2560. 
 The Makefile is designed to work with the AVR-GCC toolchain and other AVR utilities.
