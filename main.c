@@ -39,9 +39,6 @@ int main() {
 	BIT_CLEAR(DDRE,SEL_PIN); // INPUT MODE
     BIT_SET(PORTE,SEL_PIN); 
 
-	Snake_Head snake;
-	Food food;
-	Game_State gameState = GAME_START;
 	millis_init();
 	sei();
 	unsigned long current_millis = millis_get();
@@ -50,8 +47,15 @@ int main() {
 	init_serial();
 	max7219_init();
     srandom(time(NULL));
-
+	int horz = analogRead(HORZ_PIN);
+	int vert = analogRead(VERT_PIN);
+	
+	Snake_Head snake;
+	Food food;
+	Game_State gameState = GAME_START;
 	Snake_Direction currentSnakeDirection;
+	Snake_Segment snakeSegments[256];
+	int numberOfSnakeSegments = 1;
 	int seed = analogRead(4);
 	srandom(seed);
 
@@ -59,14 +63,7 @@ int main() {
 	bool firstFood = true;
 	bool isSnakeColliding = false;
 
-	int horz = analogRead(HORZ_PIN);
-	int vert = analogRead(VERT_PIN);
-
-
     setPinInput(2);  // Set pin A2 as input
-
-	Snake_Segment snakeSegments[256];
-	int numberOfSnakeSegments = 1;
 
 	while (1) {
 		current_millis = millis_get();
@@ -140,7 +137,6 @@ int main() {
             }
 			break;
 		default:
-
 			break;
 		}
 	

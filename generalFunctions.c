@@ -11,6 +11,7 @@ void setPinInput(unsigned char pin) {
     PORTF &= ~(1 << pin);   // Disable internal pull-up resistor
 }
 
+//functions to create random numbers for a 32x8 matrix. used for startingposition and food.
 int randNum(){
     int r;
     r = random() % 32;

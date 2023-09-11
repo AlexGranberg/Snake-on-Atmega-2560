@@ -4,12 +4,9 @@
 #include <string.h>
 #include <util/delay.h>
 
-#define MATRIX_WIDTH 32
-#define MATRIX_HEIGHT 8
-
 // Function to display a character on the LED matrix
 void displayCharacter(char character, int x, int y) {
-    // Define a 5x7 font for characters
+    // Define a 5x8 font for characters
     char font[8];
 
     switch (character) {
@@ -108,10 +105,5 @@ void displayText(const char* text, int x, int y) {
         }
         text++;
     }
-    max7219b_out();
-}
-
-void gameTextWin() {
-    displayText("WIN", 5, 0);
     max7219b_out();
 }

@@ -29,8 +29,23 @@ void snakeMovement(Snake_Head *snake, Snake_Direction direction, int maxX, int m
     }
 }
 
+//Update snake segments ie body
+void updateSnakeSegments(Snake_Head *snake, Snake_Segment snakeSegments[], int numberOfSnakeSegments) {
+    // Update the display with the new segments
+    for (int i = numberOfSnakeSegments - 1; i > 0; i--) {
+        snakeSegments[i] = snakeSegments[i - 1];
+    }
+    // Update the head of the snake
+    snakeSegments[0].x = snake->x_Position;
+    snakeSegments[0].y = snake->y_Position;
+
+    for (int i = 0; i < numberOfSnakeSegments; i++) {
+        max7219b_set(snakeSegments[i].x, snakeSegments[i].y);
+    }
+}
+
+// Function to make sure food doesn't spawn on snake
 bool isFoodOnSnake(unsigned char foodX, unsigned char foodY, Snake_Segment *segments, int numSegments) {
-    // Make sure food doesn't spawn on snake
     for (int i = 0; i < numSegments; i++) {
         if (foodX == segments[i].x && foodY == segments[i].y) {
             return true;
@@ -39,6 +54,7 @@ bool isFoodOnSnake(unsigned char foodX, unsigned char foodY, Snake_Segment *segm
     return false;
 }
 
+//function to check if snake is colliding with it self
 bool isSnakeCollidingWithSnake(int headX, int headY, Snake_Segment *segments, int numSegments){
 	if (numSegments <= 1) {
 		return false;
@@ -51,6 +67,7 @@ bool isSnakeCollidingWithSnake(int headX, int headY, Snake_Segment *segments, in
 	return false;
 }
 
+//Snake eats food function
 bool eatFood(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int *numberOfSnakeSegments, Game_State *gameState) {
     if (snake->x_Position == food->x_Position && snake->y_Position == food->y_Position) {
         // Food is eaten
@@ -62,7 +79,6 @@ bool eatFood(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int *
             snakeSegments[*numberOfSnakeSegments].x = snakeSegments[*numberOfSnakeSegments - 1].x;
             snakeSegments[*numberOfSnakeSegments].y = snakeSegments[*numberOfSnakeSegments - 1].y;
             (*numberOfSnakeSegments)++;
-            printf("segments, %d\n", *numberOfSnakeSegments);
             // Update the display with the new segment
             max7219b_set(snakeSegments[*numberOfSnakeSegments - 1].x, snakeSegments[*numberOfSnakeSegments - 1].y);
         } else {
@@ -81,23 +97,7 @@ void FoodInit(bool *firstFood, Food *food){
 	*firstFood = false;
 }
 
-void updateSnakeSegments(Snake_Head *snake, Snake_Segment snakeSegments[], int numberOfSnakeSegments) {
-    // Update the display with the new segments
-    for (int i = numberOfSnakeSegments - 1; i > 0; i--) {
-        snakeSegments[i] = snakeSegments[i - 1];
-    }
-
-    // Update the head of the snake
-    snakeSegments[0].x = snake->x_Position;
-    snakeSegments[0].y = snake->y_Position;
-
-    for (int i = 0; i < numberOfSnakeSegments; i++) {
-        max7219b_set(snakeSegments[i].x, snakeSegments[i].y);
-    }
-}
-
-
-
+//Function for the joystick controll
 void controls(int vert, int horz, Snake_Direction *currentSnakeDirection) {
     static bool isVertical = false;
     static bool isHorizontal = false;
@@ -144,6 +144,7 @@ void controls(int vert, int horz, Snake_Direction *currentSnakeDirection) {
     }
 }
 
+//Reset game function, getting called when joystick is clicked
 void resetGame(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int *numberOfSnakeSegments, Snake_Direction *currentSnakeDirection, bool *foodEaten, bool *firstFood) {
     snake->x_Position = randNum();
     snake->y_Position = randNum2();

@@ -4,7 +4,5 @@
 #include <avr/io.h>
 
 void displayCharacter(char character, int x, int y);
-void gameText2();
-
 
 #endif
