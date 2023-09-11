@@ -56,22 +56,25 @@ bool eatFood(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int *
         // Food is eaten
         food->x_Position = randNum();
         food->y_Position = randNum2();
-        
+
         if (*numberOfSnakeSegments < 256) {
             // Add a segment to the snake
             snakeSegments[*numberOfSnakeSegments].x = snakeSegments[*numberOfSnakeSegments - 1].x;
             snakeSegments[*numberOfSnakeSegments].y = snakeSegments[*numberOfSnakeSegments - 1].y;
             (*numberOfSnakeSegments)++;
-        }
-        else {
+            printf("segments, %d\n", *numberOfSnakeSegments);
+            // Update the display with the new segment
+            max7219b_set(snakeSegments[*numberOfSnakeSegments - 1].x, snakeSegments[*numberOfSnakeSegments - 1].y);
+        } else {
             *gameState = WIN;
         }
-        
+
         return true;
     }
-    
+
     return false;
 }
+
 
 void FoodInit(bool *firstFood, Food *food){
 	max7219b_set(food->x_Position, food->y_Position);
@@ -79,21 +82,20 @@ void FoodInit(bool *firstFood, Food *food){
 }
 
 void updateSnakeSegments(Snake_Head *snake, Snake_Segment snakeSegments[], int numberOfSnakeSegments) {
+    // Update the display with the new segments
+    for (int i = numberOfSnakeSegments - 1; i > 0; i--) {
+        snakeSegments[i] = snakeSegments[i - 1];
+    }
+
     // Update the head of the snake
     snakeSegments[0].x = snake->x_Position;
     snakeSegments[0].y = snake->y_Position;
 
-    // Shift the segments
-    for(int i = numberOfSnakeSegments - 1; i > 0; i--) {
-        snakeSegments[i] = snakeSegments[i - 1];
-    }
- 
-    // Update the display with the new segments
-    for(int i = 0; i < numberOfSnakeSegments; i++) {
+    for (int i = 0; i < numberOfSnakeSegments; i++) {
         max7219b_set(snakeSegments[i].x, snakeSegments[i].y);
     }
-	//printf("%d", numberOfSnakeSegments);
 }
+
 
 
 void controls(int vert, int horz, Snake_Direction *currentSnakeDirection) {
@@ -146,6 +148,11 @@ void resetGame(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int
     snake->x_Position = randNum();
     snake->y_Position = randNum2();
     int randomX = randNum();
+    if (randomX <= 16) {
+		*currentSnakeDirection = snake_Direction_Right;
+	} else {
+		*currentSnakeDirection = snake_Direction_Left;
+	}
     food->x_Position = randNum();
     food->y_Position = randNum2();
     *foodEaten = false;
@@ -153,14 +160,7 @@ void resetGame(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int
     *numberOfSnakeSegments = 1;
     snakeSegments[0].x = snake->x_Position;
     snakeSegments[0].y = snake->y_Position;
-    if (randomX <= 16) {
-		*currentSnakeDirection = snake_Direction_Right;
-	} else {
-		*currentSnakeDirection = snake_Direction_Left;
-	}
-    //*currentSnakeDirection = snake_Direction_Right;
 
-    // Clear the display and reset game state
     max7219b_clr_all();
     _delay_ms(1000); // Pause for a moment before restarting
 }
