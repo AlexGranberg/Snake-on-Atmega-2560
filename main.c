@@ -51,17 +51,14 @@ int main() {
 	max7219_init();
     srandom(time(NULL));
 
-	Snake_Direction currentSnakeDirection = snake_Direction_Right;
+	Snake_Direction currentSnakeDirection;
 	int seed = analogRead(4);
 	srandom(seed);
 
-	snake.x_Position = randNum();
-	snake.y_Position = randNum2();	
-	food.x_Position = randNum();
-	food.y_Position = randNum2();
 	bool foodEaten = false;
 	bool firstFood = true;
 	bool isSnakeColliding = false;
+
 	int horz = analogRead(HORZ_PIN);
 	int vert = analogRead(VERT_PIN);
 
@@ -77,7 +74,6 @@ int main() {
 
 		switch (gameState) {
 		case GAME_START:
-			//displayText("WIN", 8, 0);
 			displayText("GAME", 4, 0);
 
             if (BUTTON_IS_CLICKED(PINE, SEL_PIN)) {

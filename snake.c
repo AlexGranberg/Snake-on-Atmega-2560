@@ -145,6 +145,7 @@ void controls(int vert, int horz, Snake_Direction *currentSnakeDirection) {
 void resetGame(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int *numberOfSnakeSegments, Snake_Direction *currentSnakeDirection, bool *foodEaten, bool *firstFood) {
     snake->x_Position = randNum();
     snake->y_Position = randNum2();
+    int randomX = randNum();
     food->x_Position = randNum();
     food->y_Position = randNum2();
     *foodEaten = false;
@@ -152,7 +153,12 @@ void resetGame(Snake_Head *snake, Food *food, Snake_Segment snakeSegments[], int
     *numberOfSnakeSegments = 1;
     snakeSegments[0].x = snake->x_Position;
     snakeSegments[0].y = snake->y_Position;
-    *currentSnakeDirection = snake_Direction_Right;
+    if (randomX <= 16) {
+		*currentSnakeDirection = snake_Direction_Right;
+	} else {
+		*currentSnakeDirection = snake_Direction_Left;
+	}
+    //*currentSnakeDirection = snake_Direction_Right;
 
     // Clear the display and reset game state
     max7219b_clr_all();
