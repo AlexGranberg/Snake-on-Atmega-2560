@@ -15,8 +15,7 @@ display functions, and user controls are distributed across several source files
 This project assumes the use of an AVR microcontroller, in this case the Atmega2560, an LED matrix controlled by the MAX7219 driver, 
 a joystick for user input, and a UART module for serial communication.
 
-<img width="665" alt="snake_on_atmega" src="https://github.com/AlexGranberg/Snake-on-Atmega-2560/assets/42450559/13d9d717-070e-4421-8d21-4886389d2a83">
-
+<img width="743" alt="Skärmbild 2023-09-20 095442" src="https://github.com/AlexGranberg/Snake-on-Atmega-2560/assets/42450559/f77f5705-1f6e-458e-ae41-7ce4b248db7b">
 
 ## Getting Started
 
